@@ -7,9 +7,20 @@
 # General application configuration
 import Config
 
+config :db_connection, SamiMetrics.Repo,
+  telemetry_opts: [
+    {SamiMetrics.Repo, [:pool_size, :queue_size, :checked_out]}
+  ]
+
+# config :sami_metrics, SamiMetrics.Repo,
+#   database_url: "your_database_url",
+#   pool_size: 10
+
 config :sami_metrics,
   ecto_repos: [SamiMetrics.Repo]
 
+  config :sami_metrics, Repo,
+  pool: Ecto.Adapters.SQL.Sandbox
 # Configures the endpoint
 config :sami_metrics, SamiMetricsWeb.Endpoint,
   url: [host: "localhost"],
@@ -54,7 +65,8 @@ config :tailwind,
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
+  metadata: [:request_id],
+  level: :debug
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

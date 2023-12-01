@@ -8,16 +8,25 @@ defmodule SamiMetrics.Application do
   @impl true
   def start(_type, _args) do
 
+    SamiMetricsWeb.MetricsManager.start_link()
+
     :ok = :telemetry.attach("my-app-handler-id", [:sami_metrics, :repo, :query], &SamiMetricsWeb.Telemetry.handle_event/4, %{})
+    # :ok = :telemetry.attach("my-app-connection-id", [:sami_metrics, :repo, :query], &SamiMetrics.Repo.handle_event/4, %{})
+  #  :ok = :telemetry.attach("ecto-pool-monitor", [:ecto], &SamiMetrics.ConnectionMonitor.handle_event/4, [])
+
+
     children = [
       # Start the Telemetry supervisor
       SamiMetricsWeb.Telemetry,
       # Start the Ecto repository
-      SamiMetrics.Repo,
+      {SamiMetrics.Repo,[]},
       # Start the PubSub system
       {Phoenix.PubSub, name: SamiMetrics.PubSub},
+      # SamiMetricsWeb.MetricsManager,
       # Start Finch
       {Finch, name: SamiMetrics.Finch},
+
+      {SamiMetrics.ConnectionMonitor, []},
 
       # Start the Endpoint (http/https)
       SamiMetricsWeb.Endpoint
