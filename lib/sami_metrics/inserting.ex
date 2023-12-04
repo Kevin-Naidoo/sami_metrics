@@ -51,10 +51,17 @@ GROUP BY
     state
 ORDER BY
     state;"
-    result = Ecto.Adapters.SQL.query!(SamiMetrics.Repo, query)
-    [["active", active], ["idle", idle]] = result.rows
 
-    File.write("connections.log", "Active: #{active} | Idle: #{idle} \n", [:append, {:delayed_write, 1000000, 20}])
+    result = Ecto.Adapters.SQL.query!(SamiMetrics.Repo, query)
+    # [["active", active], ["idle", idle]| _t ]= result.rows
+
+    case result.rows do
+      [["active", active], ["idle", idle]| _t] ->
+        File.write("connections.log", "Total Connections: #{active + idle} | Active: #{active} | Idle: #{idle} \n", [:append, {:delayed_write, 1000000, 20}])
+    end
+
+
+
 
   #   # Filter connections based on their activity
    end

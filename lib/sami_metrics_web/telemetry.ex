@@ -77,7 +77,7 @@ defmodule SamiMetricsWeb.Telemetry do
 
 
   def handle_event([:sami_metrics, :repo, :query], measurements, metadata, config) do
-    IO.inspect binding()
+    #IO.inspect binding()
   end
 
 
